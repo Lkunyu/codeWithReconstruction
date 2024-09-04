@@ -1,0 +1,28 @@
+{
+    "files.associations": {
+        "CombineDTOFTracker.C": "cpp",
+        "AnalysisAPV.C": "cpp",
+        "AnalysisTDC.C": "cpp",
+        "T0tool.C": "cpp",
+        "CombineT0Tracker.C": "cpp",
+        "CombineInfo.C": "cpp",
+        "DtofDat2Root.C": "cpp",
+        "Separationtool.C": "cpp",
+        "CRAnalysis.C": "cpp",
+        "ReadData.C": "cpp",
+        "ReconstructTrack.C": "cpp",
+        "DecodeAPV.C": "cpp",
+        "CRInfo.C": "cpp",
+        "TrackerAPV2root.C": "cpp",
+        "CombineData.C": "cpp",
+        "APV2DetStrip.C": "cpp",
+        "T0Rectool.C": "cpp",
+        "Rectool.C": "cpp",
+        "ReadTracker.C": "cpp",
+        "ReadTracker copy.C": "cpp",
+        "RecData.C": "cpp",
+        "mergeCali.C": "cpp",
+        "T0Cali.C": "cpp",
+        "openTBrowser.C": "cpp"
+    }
+}
