@@ -95,7 +95,7 @@ void AnalysisAPV::Loop()
   TH1I *hHit[8];
   for (int i = 0; i < 8; i++)
   {
-    hHit[i] = new TH1I(Form("Hit%s%d", XYname(i % 2).Data(), i / 2), Form("Hit%s%d", XYname(i % 2).Data(), i / 2), 128, 0, 128);
+    hHit[i] = new TH1I(Form("Hit%s%d", XYname(i % 2).Data(), i / 2), Form("Hit%s%d", XYname(i % 2).Data(), i / 2), 256, 0, 256);
     hHit[i]->GetXaxis()->SetTitle("channel");
     hHit[i]->GetYaxis()->SetTitle("Counts");
   }

@@ -23,6 +23,10 @@
         "RecData.C": "cpp",
         "mergeCali.C": "cpp",
         "T0Cali.C": "cpp",
-        "openTBrowser.C": "cpp"
-    }
+        "openTBrowser.C": "cpp",
+        "T0Result.C": "cpp",
+        "Trackertool.C": "cpp",
+        "T0TTS.C": "cpp"
+    },
+    "Codegeex.RepoIndex": true
 }

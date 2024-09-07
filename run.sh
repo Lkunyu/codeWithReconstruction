@@ -1,4 +1,8 @@
+#!/bin/bash
 make
-./ReadData /mnt/d/beamtest/data/47/ 1
-./T0Cali /mnt/d/beamtest/data/47/ 1
-root -l openTBrowser.C
+
+for i in {1..5}; do
+    ./ReadTracker ../../BeamData/run016$i 1
+done
+
+root -l ../openTBrowser.C

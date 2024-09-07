@@ -159,119 +159,126 @@ void TrackerAPV2root::Loop()
                 eventall = event + eventloop[i] * 65536;
             }
             else if ((counting == 9) && ((memblock & 0xff00) == 0x0000))
-            { /*
-                 if (i == 0)
-                 {
-                     if (RealChip <= 3)
-                     {
-                         board = 0;
-                         chip = RealChip;
-                     }
-                     else if (RealChip >= 8)
-                     {
-                         board = 1;
-                         chip = RealChip - 8;
-                     }
-                 }
-
-                 else if (i == 1)
-                 {
-                     if (RealChip <= 3)
-                     {
-                         board = 2;
-                         // chip = RealChip;
-                         switch (RealChip)
-                         {
-                         case 0:
-                             chip = 2;
-                             break;
-                         case 1:
-                             chip = 3;
-                             break;
-                         case 2:
-                             chip = 0;
-                             break;
-                         case 3:
-                             chip = 1;
-                             break;
-                         default:
-                             break;
-                         }
-                     }
-                     else if (RealChip >= 8)
-                     {
-                         // cout<<"RealChip "<<RealChip<<endl;
-                         board = 3;
-                         // chip = RealChip - 8;
-                         switch (RealChip)
-                         {
-                         case 8:
-                             chip = 2;
-                             break;
-                         case 9:
-                             chip = 3;
-                             break;
-                         case 10:
-                             chip = 0;
-                             break;
-                         case 11:
-                             chip = 1;
-                             break;
-                         default:
-                             break;
-                         }
-                     }
-                     else if (RealChip > 3 && RealChip < 8)
-                     {
-                         chip = -1;
-                         continue;
-                     }
-                 }
- */
-                if (i == 0)
+            {
+                bool setup = 0;
+                if (setup == 0)
                 {
-                    if (RealChip <= 3)
+                    if (i == 0)
                     {
-                        board = 1;
-                        // chip = RealChip;
-                        switch (RealChip)
+                        if (RealChip <= 3)
                         {
-                        case 0:
-                            chip = 2;
-                            break;
-                        case 1:
-                            chip = 3;
-                            break;
-                        case 2:
-                            chip = 0;
-                            break;
-                        case 3:
-                            chip = 1;
-                            break;
-                        default:
-                            break;
+                            board = 0;
+                            chip = RealChip;
+                        }
+                        else if (RealChip >= 8)
+                        {
+                            board = 1;
+                            chip = RealChip - 8;
                         }
                     }
-                    else if (RealChip >= 8)
+
+                    else if (i == 1)
                     {
-                        board = 0;
-                        chip = RealChip - 8;
+                        if (RealChip <= 3)
+                        {
+                            board = 2;
+                            // chip = RealChip;
+                            switch (RealChip)
+                            {
+                            case 0:
+                                chip = 2;
+                                break;
+                            case 1:
+                                chip = 3;
+                                break;
+                            case 2:
+                                chip = 0;
+                                break;
+                            case 3:
+                                chip = 1;
+                                break;
+                            default:
+                                break;
+                            }
+                        }
+                        else if (RealChip >= 8)
+                        {
+                            // cout<<"RealChip "<<RealChip<<endl;
+                            board = 3;
+                            // chip = RealChip - 8;
+                            switch (RealChip)
+                            {
+                            case 8:
+                                chip = 2;
+                                break;
+                            case 9:
+                                chip = 3;
+                                break;
+                            case 10:
+                                chip = 0;
+                                break;
+                            case 11:
+                                chip = 1;
+                                break;
+                            default:
+                                break;
+                            }
+                        }
+                        else if (RealChip > 3 && RealChip < 8)
+                        {
+                            chip = -1;
+                            continue;
+                        }
+                    }
+                }
+                else if (setup == 1)
+                {
+                    if (i == 0)
+                    {
+                        if (RealChip <= 3)
+                        {
+                            board = 1;
+                            // chip = RealChip;
+                            switch (RealChip)
+                            {
+                            case 0:
+                                chip = 2;
+                                break;
+                            case 1:
+                                chip = 3;
+                                break;
+                            case 2:
+                                chip = 0;
+                                break;
+                            case 3:
+                                chip = 1;
+                                break;
+                            default:
+                                break;
+                            }
+                        }
+                        else if (RealChip >= 8)
+                        {
+                            board = 0;
+                            chip = RealChip - 8;
+                        }
+                    }
+
+                    else if (i == 1)
+                    {
+                        if (RealChip <= 3)
+                        {
+                            board = 2;
+                            chip = RealChip;
+                        }
+                        else if (RealChip >= 8)
+                        {
+                            board = 3;
+                            chip = RealChip - 8;
+                        }
                     }
                 }
 
-                else if (i == 1)
-                {
-                    if (RealChip <= 3)
-                    {
-                        board = 2;
-                        chip = RealChip;
-                    }
-                    else if (RealChip >= 8)
-                    {
-                        board = 3;
-                        chip = RealChip - 8;
-                    }
-                }
                 channel = memblock & 0x00ff;
                 // std::cout << "channel number = " << channel << endl;
             }

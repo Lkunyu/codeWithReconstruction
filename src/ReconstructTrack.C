@@ -763,7 +763,7 @@ void ReconstructTrack::Alignment(string filename, int Npars)
     }
     cout << endl;
 
-    if (Abs(Chi_pre - Sqrt(Chi2 / NChi)) < res || loop > 1e3)
+    if (Abs(Chi_pre - Sqrt(Chi2 / NChi)) < res || loop > 5e3)
       break;
     else
       Chi_pre = Sqrt(Chi2 / NChi);

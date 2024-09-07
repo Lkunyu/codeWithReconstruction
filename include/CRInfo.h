@@ -45,11 +45,12 @@ const double Yoff[6] = {0, 0, 0, 0, 0, 0};
 // const double Yoff[NDET + 2] = {90, 90, -35, -35, 45, 0}; // 20 degree angle
 //  old position
 // const double Zpos[6] = {582, 538, -120, -164, 320, 26}; // MM-0-3, T0, DTOF
-//  new position
-// const double Zpos[7] = {2207, 2067, -3947, -4147, 3357, -4922, 0}; // MM-0-3, T01,T02, DTOF
-const double Zpos[7] = {0, -200, -870, -1070, 3357, -4922, 0}; // MM-0-3, T01,T02, DTOF
-const double rmscut = 7;                                                 // for MM waveform cut
-const int max_Nch_use = 10;                                              // for MM dec
+// position for beam test setup==0
+const double Zpos[7] = {2207, 2067, -3947, -4147, 3357, -4922, 0}; // MM-0-3, T01,T02, DTOF
+// position for beam test setup==1
+// const double Zpos[7] = {0, -200, -870, -1070, 3357, -4922, 0}; // MM-0-3, T01,T02, DTOF
+const double rmscut = 7;    // for MM waveform cut
+const int max_Nch_use = 10; // for MM dec
 
 const int color[21] = {1, 2, 3, 4, 6, 7, 9, 30, 50, 51, 28, 38, 41, 39, 42, 20, 40, 5, 8, 29, 33};
 
