@@ -178,6 +178,7 @@ void DecodeAPV::Loop()
       {
         vector<int> aget_ch;
         vector<double> aget_amp;
+        std::vector<std::pair<int, double>> paired_vector;
         while (i == eventvec[j][pos[j] - 1])
           pos[j]--; // find first pos, eventvec[pos] == i
 
@@ -192,15 +193,31 @@ void DecodeAPV::Loop()
           }
           if (Cut()) // Cut()
           {
-            aget_ch.push_back(channel);
-            aget_amp.push_back(maxA);
+            // aget_ch.push_back(channel);
+            // aget_amp.push_back(maxA);
+            paired_vector.push_back(std::make_pair(channel, maxA));
           }
         }
 
-        if (aget_ch.size() != 0)
+        if (paired_vector.size() != 0)
         { ///////////////recode
 
           //************************************************************************ */
+          // 根据第一个向量的值进行排序
+          std::sort(paired_vector.begin(), paired_vector.end());
+
+          for (auto &&ii : paired_vector)
+          {
+            aget_ch.push_back(ii.first);
+            aget_amp.push_back(ii.second);
+          }
+
+          // cout << endl
+          //      << "event: " << i << endl;
+          // for (size_t ii = 0; ii < aget_ch.size(); ii++)
+          // {
+          //   cout << "channel: " << aget_ch[ii] << " amp: " << aget_amp[ii] << endl;
+          // }
 
           if (CalHit(aget_ch, aget_amp, j))
           {
@@ -220,7 +237,7 @@ void DecodeAPV::Loop()
               {
                 hy[j / 2]->Fill((y - 256 / 2) * 0.4); // total strips 384
                 hampy[j / 2]->Fill(hit_amp_y);
-                hampxy[j/2]->Fill(hit_amp_x+hit_amp_y);
+                hampxy[j / 2]->Fill(hit_amp_x + hit_amp_y);
               }
               hstripy[j / 2]->Fill(hit_strip_num_y);
             }
@@ -250,10 +267,10 @@ void DecodeAPV::Loop()
         // cout<<" --> Lost record hit at Tracker"<<XYname(j%2)<<j/2<<", event ID: "<<event<< endl;
         op << " --> Lost record hit at Tracker" << XYname(j % 2) << j / 2 << ", event ID: " << event << endl;
       }
-      if (j % 2 == 1){
+      if (j % 2 == 1)
+      {
         fdecTree[j / 2]->Fill();
       }
-        
     }
   } // event loop
   for (int i = 0; i < 4; i++)
@@ -302,7 +319,7 @@ void DecodeAPV::Loop()
   }
   cMMamp->Write();
 
-    TCanvas *cMMamp2 = new TCanvas("MMamp2", "MMamp2");
+  TCanvas *cMMamp2 = new TCanvas("MMamp2", "MMamp2");
   cMMamp2->Divide(4, 3);
   for (int i = 0; i < 4; i++)
   {
@@ -352,16 +369,21 @@ void DecodeAPV::InitData()
 }
 
 bool DecodeAPV::CalHit(vector<int> ch, vector<double> amp, int XY)
-{                              /// waves are easy to maximum
+{                             /// waves are easy to maximum
   double overthreshold = 100; // maxA should be lower than that
-  if ((ch.size() == 0)||(ch.size()>5))
+  if ((ch.size() == 0) || (ch.size() > 100))
     return false;
   double temp = 0;
+  double ttemp = 0;
+  vector<double> vec_temp;
   int locmax = 0;
   int channelloc = 0;
   double Q1, Q2;
   double m, n;
   double Qall = 0;
+  double tQall = 0;
+  vector<double> vec_Qall;
+  int pre_channel;
   double Q0 = overthreshold;
   double A, B, C, D, E, F, G, H;
   if (0) // TMath::MaxElement(amp.size(), &amp.at(0)) > 1200
@@ -397,7 +419,7 @@ bool DecodeAPV::CalHit(vector<int> ch, vector<double> amp, int XY)
       // }
       if (ch.size() > 1)
       {
-        temp=abs(channelend-channelbegin)/2.0;
+        temp = abs(channelend - channelbegin) / 2.0;
         // A = (overthreshold - amp.at(max(0, channelbegin - 2))) / 2.0;
         // B = (overthreshold - amp.at(min(channelend + 2, 30))) / 2.0;
         // temp = (channelbegin * A - channelend * B) / (A - B);
@@ -406,11 +428,28 @@ bool DecodeAPV::CalHit(vector<int> ch, vector<double> amp, int XY)
   }
   else
   {
+    pre_channel = ch[0];
     for (int i = 0; i < ch.size(); i++)
     {
+
       temp += amp.at(i) * ch.at(i);
       Qall += amp.at(i);
+      ttemp += amp.at(i) * ch.at(i);
+      tQall += amp.at(i);
+      if ((ch[i] - pre_channel > 3) || (i == (ch.size() - 1)))
+      {
+        vec_Qall.push_back(tQall);
+        vec_temp.push_back(ttemp /= tQall);
+        tQall = 0;
+        ttemp = 0;
+      }
+      pre_channel = ch.at(i);
     }
+    // for (size_t i = 0; i < vec_Qall.size(); i++)
+    // {
+    //   cout << " cluster: " << i << " position: " << vec_temp[i] << " Q: " << vec_Qall[i] << endl;
+    // }
+
     temp /= Qall; // average
   }
   // cout<<"data : "<<endl;
@@ -424,25 +463,29 @@ bool DecodeAPV::CalHit(vector<int> ch, vector<double> amp, int XY)
     sig_x = true;
     x = temp;
     temp = 0;
+    vec_temp.clear();
     // x-=128/2;
-    //hit_amp_x = TMath::MaxElement(amp.size(), &amp.at(0));
-    hit_amp_x=Qall;
+    // hit_amp_x = TMath::MaxElement(amp.size(), &amp.at(0));
+    hit_amp_x = Qall;
     hit_strip_num_x = amp.size();
     for (int s = 1; s < ch.size() && x_nhits < 5; s++, x_nhits++)
       x_other.push_back(ch.at(s));
     Qall = 0;
+    vec_Qall.clear();
   }
   if (XY % 2 == 1)
   {
     sig_y = true;
     y = temp;
     temp = 0;
-    //hit_amp_y = TMath::MaxElement(amp.size(), &amp.at(0));
-    hit_amp_y=Qall;
+    vec_temp.clear();
+    // hit_amp_y = TMath::MaxElement(amp.size(), &amp.at(0));
+    hit_amp_y = Qall;
     hit_strip_num_y = amp.size();
     for (int s = 1; s < ch.size() && y_nhits < 5; s++, y_nhits++)
       y_other.push_back(ch.at(s));
     Qall = 0;
+    vec_Qall.clear();
   }
 
   return true;

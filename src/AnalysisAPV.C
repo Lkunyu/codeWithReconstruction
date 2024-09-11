@@ -13,7 +13,8 @@ AnalysisAPV::~AnalysisAPV()
 
 bool AnalysisAPV::Cut()
 {
-  return maxA > pedrms * rmscut && maxT > 0 && maxT < 20 && riseT > 0 && riseT < 15 && TOT > 0 && TOT < 20;
+  // return maxA > pedrms * rmscut && maxT > 0 && maxT < 20 && riseT > 0 && riseT < 15 && TOT > 0 && TOT < 20;
+  return maxA > pedrms * rmscut;
 }
 
 bool AnalysisAPV::Init()
@@ -144,7 +145,7 @@ void AnalysisAPV::Loop()
     //   pedrms = hNoise->GetFunction("gaus")->GetParameter(2);
     //  ped = //hNoise->GetMean();
     //  pedrms = //hNoise->GetStdDev();
-    if (ped > 0 || ped < -600 || pedrms < 0)
+    if (ped > 0 || ped < -400 || pedrms < 0)
     {
       // cout << " [WARNING!] Bad Fit! channel: "<<64*(Det*2+XY)+channel<< endl;
       op << " [WARNING!] Bad Fit! channel: " << channel << " Det " << Det << " XY " << XY << endl; ////////////////////

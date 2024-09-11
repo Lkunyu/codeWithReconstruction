@@ -170,7 +170,7 @@ void ReconstructTrack::Loop()
         if (thetaX < theta_cut && Abs(fitX) < pos_cut)
         {
           efficiencyX[j][0]++;
-          if (MMsigx[j] && Abs(MMx[j] - fitX) < 10)
+          if (MMsigx[j] && Abs(MMx[j] - fitX) < 100)
           {
             efficiencyX[j][1]++;
             hpos[j][0]->Fill((MMx[j] - fitX) * 1000);
@@ -187,7 +187,7 @@ void ReconstructTrack::Loop()
         if (thetaY < theta_cut && Abs(fitY) < pos_cut)
         {
           efficiencyY[j][0]++;
-          if (MMsigy[j] && Abs(MMy[j] - fitY) < 10)
+          if (MMsigy[j] && Abs(MMy[j] - fitY) < 100)
           {
             efficiencyY[j][1]++;
             hpos[j][1]->Fill((MMy[j] - fitY) * 1000);
