@@ -1,14 +1,9 @@
 #include "CRAnalysis.h"
 
-#include "DtofDat2Root.h"
-#include "AnalysisTDC.h"
-#include "T0tool.h"
 #include "DecodeAPV.h"
 #include "ReconstructTrack.h"
 #include "AnalysisAPV.h"
 #include "TrackerAPV2root.h"
-#include "CombineInfo.h"
-#include "Rectool.h"
 
 void ReadTracker(TString fileDir, int force)
 {
@@ -83,7 +78,7 @@ void ReadTracker(TString fileDir, int force)
 
   bench.Show("full");
 }
-
+/*
 void ReadDTOF(TString fileDir, int force)
 {
   TBenchmark bench;
@@ -262,6 +257,8 @@ void RecData(TString fileDir, int force)
 
   bench.Show("full");
 }
+*/
+
 // void RecTDC(TString fileDir, int force)
 // {
 //   TBenchmark bench;
