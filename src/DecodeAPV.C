@@ -77,6 +77,8 @@ bool DecodeAPV::Init()
     fdecTree[i]->Branch("y_nhits", &y_nhits);
     fdecTree[i]->Branch("x_other", &x_other);
     fdecTree[i]->Branch("y_other", &y_other);
+    fdecTree[i]->Branch("vec_Cluster_x", &vec_Cluster_x);
+    fdecTree[i]->Branch("vec_Cluster_y", &vec_Cluster_y);
   }
 
   // dechit = new APV2DetStrip(asic2detName);
@@ -366,6 +368,8 @@ void DecodeAPV::InitData()
   y_nhits = 0;
   x_other.clear();
   y_other.clear();
+  vec_Cluster_x.clear();
+  vec_Cluster_y.clear();
 }
 
 bool DecodeAPV::CalHit(vector<int> ch, vector<double> amp, int XY)
@@ -463,6 +467,11 @@ bool DecodeAPV::CalHit(vector<int> ch, vector<double> amp, int XY)
     sig_x = true;
     x = temp;
     temp = 0;
+    for (auto &&ii : vec_temp)
+    {
+      vec_Cluster_x.push_back(ii);
+    }
+
     vec_temp.clear();
     // x-=128/2;
     // hit_amp_x = TMath::MaxElement(amp.size(), &amp.at(0));
@@ -478,6 +487,10 @@ bool DecodeAPV::CalHit(vector<int> ch, vector<double> amp, int XY)
     sig_y = true;
     y = temp;
     temp = 0;
+    for (auto &&ii : vec_temp)
+    {
+      vec_Cluster_y.push_back(ii);
+    }
     vec_temp.clear();
     // hit_amp_y = TMath::MaxElement(amp.size(), &amp.at(0));
     hit_amp_y = Qall;

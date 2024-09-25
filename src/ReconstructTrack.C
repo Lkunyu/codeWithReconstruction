@@ -40,6 +40,8 @@ bool ReconstructTrack::Init()
     fdecTree[i]->SetBranchAddress("x", &x, &b_x);
     fdecTree[i]->SetBranchAddress("y", &y, &b_y);
     fdecTree[i]->SetBranchAddress("z", &z, &b_z);
+    fdecTree[i]->SetBranchAddress("vec_Cluster_x", &vec_Cluster_x, &b_vec_Cluster_x);
+    fdecTree[i]->SetBranchAddress("vec_Cluster_y", &vec_Cluster_y, &b_vec_Cluster_y);
     // fdecTree[i]->SetBranchAddress("hit_amp_x", &hit_amp_x, &b_hit_amp_x);
     // fdecTree[i]->SetBranchAddress("hit_amp_y", &hit_amp_y, &b_hit_amp_y);
     // fdecTree[i]->SetBranchAddress("hit_strip_num_x", &hit_strip_num_x, &b_hit_strip_num_x);
@@ -66,6 +68,10 @@ bool ReconstructTrack::Init()
     cout << "ERROR! " << recName << " cant open!" << endl;
     return false;
   }
+
+  cluster_x.resize(MMdetN);
+  cluster_y.resize(MMdetN);
+
   frecTree = new TTree("Track", "Track");
   frecTree->Branch("event", &event, "event/I");
   frecTree->Branch("MMx", MMx, Form("MMx[%d]/D", MMdetN));
@@ -76,6 +82,8 @@ bool ReconstructTrack::Init()
   frecTree->Branch("XfitPars", XfitPars, "XfitPars[3]/D");
   frecTree->Branch("YfitPars", YfitPars, "YfitPars[3]/D");
   frecTree->Branch("useflag", &useflag, "useflag/O");
+  frecTree->Branch("cluster_x", &cluster_x, Form("cluster_x[%d]/D", MMdetN));
+  frecTree->Branch("cluster_y", &cluster_y, Form("cluster_y[%d]/D", MMdetN));
 
   // get_APV2det_lists(asic2detName.Data());
 
@@ -85,6 +93,24 @@ bool ReconstructTrack::Init()
   ReadAlignmentPars(alignmentPar3Name.Data(), 3);
   ReadAlignmentPars(alignmentPar6Name.Data(), 6);
   return true;
+}
+
+void ReconstructTrack::StoreCluster(int n)
+{
+  if (vec_Cluster_x->size() && vec_Cluster_y->size())
+  {
+
+    for (size_t i = 0; i < vec_Cluster_x->size(); i++)
+    {
+      cout << "cluster_x->at(i) = " << vec_Cluster_x->at(i) << endl;
+      cluster_x[n].push_back(vec_Cluster_x->at(i));
+    }
+    for (size_t i = 0; i < vec_Cluster_y->size(); i++)
+    {
+      cout << "cluster_y->at(i) = " << vec_Cluster_y->at(i) << endl;
+      cluster_y[n].push_back(vec_Cluster_y->at(i));
+    }
+  }
 }
 
 void ReconstructTrack::Loop()
@@ -230,16 +256,16 @@ void ReconstructTrack::Loop()
 
     cMMeff->cd(2 * i + 1);
     hpos[i][0]->Draw();
-    la = CreatLatex(Form("#color[2]{#sigma=%.0f#mum}", res[i][0]), 0.6, 0.35);
+    la = CreatLatex(Form("#color[2]{#sigma=%.0f#mum}", res[i][0]), 0.6, 0.35, 60);
     la->Draw("same");
-    la = CreatLatex(Form("Eff=%.1f%%", efficiencyX[i][2] * 100), 0.2, 0.75);
+    la = CreatLatex(Form("Eff=%.1f%%", efficiencyX[i][2] * 100), 0.2, 0.75, 60);
     la->Draw("same");
 
     cMMeff->cd(2 * i + 2);
     hpos[i][1]->Draw();
-    la = CreatLatex(Form("#color[2]{#sigma=%.0f#mum}", res[i][1]), 0.6, 0.35);
+    la = CreatLatex(Form("#color[2]{#sigma=%.0f#mum}", res[i][1]), 0.6, 0.35, 60);
     la->Draw("same");
-    la = CreatLatex(Form("Eff=%.1f%%", efficiencyY[i][2] * 100), 0.2, 0.75);
+    la = CreatLatex(Form("Eff=%.1f%%", efficiencyY[i][2] * 100), 0.2, 0.75, 60);
     la->Draw("same");
   }
   cMMeff->Write();
@@ -272,6 +298,17 @@ void ReconstructTrack::InitData()
   memset(MMsigy, 0, sizeof(MMsigy));
   memset(XfitPars, 0, sizeof(XfitPars));
   memset(YfitPars, 0, sizeof(YfitPars));
+
+  cluster_x.resize(MMdetN);
+  cluster_y.resize(MMdetN);
+  for (size_t i = 0; i < sizeof(cluster_x); i++)
+  {
+    cluster_x[i].clear();
+  }
+  for (size_t i = 0; i < sizeof(cluster_y); i++)
+  {
+    cluster_y[i].clear();
+  }
 }
 
 bool ReconstructTrack::track_reconstruction(vector<double> px, vector<double> py, vector<double> pz)
@@ -282,6 +319,7 @@ bool ReconstructTrack::track_reconstruction(vector<double> px, vector<double> py
   vector<double> tmpzx, tmpx, tmpzy, tmpy;
   for (int i = 0; i < pz.size(); i++)
   {
+    StoreCluster(i);
     if (px[i] != 0)
     {
       idx.push_back(i);
@@ -763,7 +801,7 @@ void ReconstructTrack::Alignment(string filename, int Npars)
     }
     cout << endl;
 
-    if (Abs(Chi_pre - Sqrt(Chi2 / NChi)) < res || loop > 5e3)
+    if (Abs(Chi_pre - Sqrt(Chi2 / NChi)) < res || loop > 5e2)
       break;
     else
       Chi_pre = Sqrt(Chi2 / NChi);
