@@ -63,13 +63,13 @@ void ReadTracker(TString fileDir, int force)
   //   fAnalysisAPV.Loop();
   // cout << endl;
 
-  // // #decode ASIC channel to detector channel
-  // cout << endl
-  //      << " --> Decoding hits, Output : " << TrackerDecName << endl;
-  // DecodeAPV fDecodeAPV(TrackerAnaName, TrackerDecName, force);
-  // if (fDecodeAPV.Init())
-  //   fDecodeAPV.Loop();
-  // cout << endl;
+  // #decode ASIC channel to detector channel
+  cout << endl
+       << " --> Decoding hits, Output : " << TrackerDecName << endl;
+  DecodeAPV fDecodeAPV(TrackerAnaName, TrackerDecName, force);
+  if (fDecodeAPV.Init())
+    fDecodeAPV.Loop();
+  cout << endl;
 
   // #reconstruct track, including track alignment
   cout << endl
@@ -83,7 +83,7 @@ void ReadTracker(TString fileDir, int force)
 
   bench.Show("full");
 }
-
+/*
 void ReadDTOF(TString fileDir, int force)
 {
   TBenchmark bench;
@@ -262,6 +262,8 @@ void RecData(TString fileDir, int force)
 
   bench.Show("full");
 }
+*/
+
 // void RecTDC(TString fileDir, int force)
 // {
 //   TBenchmark bench;

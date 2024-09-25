@@ -119,6 +119,8 @@ void ReconstructTrack::Loop()
   TCanvas *cTmp = new TCanvas("rectmp", "rectmp");
   TH1F *hpos[MMdetN][2];
   TH1F *htheta[MMdetN][3];
+  TH1F *hUnEfficiency1D[MMdetN][2];
+  TH2F *hUnEfficiency2D[MMdetN];
   for (int i = 0; i < MMdetN; i++)
   {
     hpos[i][0] = new TH1F(Form("resX%d", i), Form("resX%d", i), 500, -4000, 4000);
@@ -136,6 +138,15 @@ void ReconstructTrack::Loop()
     htheta[i][2] = new TH1F(Form("thetaMM%d", i), Form("thetaMM%d", i), 100, 0, 5);
     htheta[i][2]->GetXaxis()->SetTitle("#theta [#circ]");
     htheta[i][2]->GetYaxis()->SetTitle("counts");
+    hUnEfficiency1D[i][0] = new TH1F(Form("UnEfficiencyX%d", i), Form("UnEfficiencyX%d", i), 250, -5, 5);
+    hUnEfficiency1D[i][0]->GetXaxis()->SetTitle("x [#mum]");
+    hUnEfficiency1D[i][0]->GetYaxis()->SetTitle("counts");
+    hUnEfficiency1D[i][1] = new TH1F(Form("UnEfficiencyY%d", i), Form("UnEfficiencyY%d", i), 250, -5, 5);
+    hUnEfficiency1D[i][1]->GetXaxis()->SetTitle("y [#mum]");
+    hUnEfficiency1D[i][1]->GetYaxis()->SetTitle("counts");
+    hUnEfficiency2D[i] = new TH2F(Form("UnEfficiencyMM%d", i), Form("UnEfficiencyMM%d", i), 250, -5, 5, 250, -5, 5);
+    hUnEfficiency2D[i]->GetXaxis()->SetTitle("x [#mum]");
+    hUnEfficiency2D[i]->GetYaxis()->SetTitle("y [#mum]");
   }
 
   double res[MMdetN][2] = {0};
@@ -186,6 +197,10 @@ void ReconstructTrack::Loop()
       }
       bool good_fit_x = false;
       bool good_fit_y = false;
+      int IsUnEffX = 0;
+      int IsUnEffY = 0;
+      double tempX = 0;
+      double tempY = 0;
       if (fit_track(zx, xx, parx))
       {
         good_fit_x = true;
@@ -200,6 +215,12 @@ void ReconstructTrack::Loop()
           {
             efficiencyX[j][1]++;
             hpos[j][0]->Fill((MMx[j] - fitX) * 1000);
+          }
+          else
+          {
+            IsUnEffX = true;
+            tempX = fitX;
+            hUnEfficiency1D[j][0]->Fill(fitX);
           }
         }
       }
@@ -217,6 +238,16 @@ void ReconstructTrack::Loop()
           {
             efficiencyY[j][1]++;
             hpos[j][1]->Fill((MMy[j] - fitY) * 1000);
+          }
+          else
+          {
+            hUnEfficiency1D[j][1]->Fill(fitY);
+            tempY = fitY;
+            IsUnEffY = true;
+            if (IsUnEffX && IsUnEffY)
+            {
+              hUnEfficiency2D[j]->Fill(tempX, tempY);
+            }
           }
         }
       }
@@ -269,6 +300,19 @@ void ReconstructTrack::Loop()
     la->Draw("same");
   }
   cMMeff->Write();
+
+  TCanvas *cUnEfficiency = new TCanvas("UnEfficiency", "UnEfficiency");
+  cUnEfficiency->Divide(MMdetN, 3);
+  for (int i = 0; i < MMdetN; i++)
+  {
+    cUnEfficiency->cd(i + 1);
+    hUnEfficiency1D[i][0]->Draw();
+    cUnEfficiency->cd(i + MMdetN + 1);
+    hUnEfficiency1D[i][1]->Draw();
+    cUnEfficiency->cd(i + 2 * MMdetN + 1);
+    hUnEfficiency2D[i]->Draw("colz");
+  }
+  cUnEfficiency->Write();
 
   TCanvas *cTheta = new TCanvas("Mutheta", "Mutheta");
   cTheta->Divide(MMdetN, 3);
