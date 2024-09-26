@@ -158,6 +158,12 @@ void ReconstructTrack::Loop()
   {
     DrawProcessbar(i, nentries);
     InitData();
+    cout << "vec_Cluster_x->size() = " << vec_Cluster_x->size() << endl;
+    for (size_t ii = 0; ii < vec_Cluster_x->size(); ii++)
+    {
+      cout << vec_Cluster_x->at(ii) << " " << endl;
+    }
+
     vector<double> px, py, pz;
     for (int j = 0; j < MMdetN; j++)
     {
