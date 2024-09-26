@@ -160,7 +160,7 @@ void TrackerAPV2root::Loop()
             }
             else if ((counting == 9) && ((memblock & 0xff00) == 0x0000))
             {
-                bool setup = 0;
+                bool setup = 1;
                 if (setup == 0)
                 {
                     if (i == 0)

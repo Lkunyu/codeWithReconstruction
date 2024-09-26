@@ -375,7 +375,7 @@ void DecodeAPV::InitData()
 bool DecodeAPV::CalHit(vector<int> ch, vector<double> amp, int XY)
 {                             /// waves are easy to maximum
   double overthreshold = 100; // maxA should be lower than that
-  if ((ch.size() == 0) || (ch.size() > 100))
+  if ((ch.size() == 0) || (ch.size() > 150))
     return false;
   double temp = 0;
   double ttemp = 0;
@@ -454,7 +454,8 @@ bool DecodeAPV::CalHit(vector<int> ch, vector<double> amp, int XY)
     //   cout << " cluster: " << i << " position: " << vec_temp[i] << " Q: " << vec_Qall[i] << endl;
     // }
 
-    temp /= Qall; // average
+    temp /= Qall;          // average
+    temp = vec_temp.at(0); // max
   }
   // cout<<"data : "<<endl;
   // for(int i=0;i<ch.size();i++){

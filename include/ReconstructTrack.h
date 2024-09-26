@@ -91,6 +91,14 @@ private:
   /// output data
   vector<vector<double>> cluster_x;
   vector<vector<double>> cluster_y;
+  vector<double> cluster_0x;
+  vector<double> cluster_0y;
+  vector<double> cluster_1x;
+  vector<double> cluster_1y;
+  vector<double> cluster_2x;
+  vector<double> cluster_2y;
+  vector<double> cluster_3x;
+  vector<double> cluster_3y;
   double MMx[MMdetN];
   double MMy[MMdetN];
   double MMz[MMdetN];

@@ -47,9 +47,9 @@ const double Yoff[6] = {0, 0, 0, 0, 0, 0};
 // const double Zpos[6] = {582, 538, -120, -164, 320, 26}; // MM-0-3, T0, DTOF
 
 // position for beam test setup==0
-const double Zpos[7] = {2207, 2067, -3947, -4147, 3357, -4922, 0}; // MM-0-3, T01,T02, DTOF
+// const double Zpos[7] = {2207, 2067, -3947, -4147, 3357, -4922, 0}; // MM-0-3, T01,T02, DTOF
 // position for beam test setup==1
-//  const double Zpos[7] = {0, -200, -870, -1070, 3357, -4922, 0}; // MM-0-3, T01,T02, DTOF
+const double Zpos[7] = {0, -200, -870, -1070, 3357, -4922, 0}; // MM-0-3, T01,T02, DTOF
 
 const double rmscut = 5;    // for MM waveform cut
 const int max_Nch_use = 10; // for MM dec

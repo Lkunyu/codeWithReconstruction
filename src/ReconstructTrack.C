@@ -82,8 +82,22 @@ bool ReconstructTrack::Init()
   frecTree->Branch("XfitPars", XfitPars, "XfitPars[3]/D");
   frecTree->Branch("YfitPars", YfitPars, "YfitPars[3]/D");
   frecTree->Branch("useflag", &useflag, "useflag/O");
-  frecTree->Branch("cluster_x", &cluster_x, Form("cluster_x[%d]/D", MMdetN));
-  frecTree->Branch("cluster_y", &cluster_y, Form("cluster_y[%d]/D", MMdetN));
+  frecTree->Branch("cluster_0x", &cluster_0x);
+  frecTree->Branch("cluster_1x", &cluster_1x);
+  frecTree->Branch("cluster_2x", &cluster_2x);
+  frecTree->Branch("cluster_3x", &cluster_3x);
+  frecTree->Branch("cluster_0y", &cluster_0y);
+  frecTree->Branch("cluster_1y", &cluster_1y);
+  frecTree->Branch("cluster_2y", &cluster_2y);
+  frecTree->Branch("cluster_3y", &cluster_3y);
+  // frecTree->Branch("cluster_0x", &cluster_0x, Form("cluster_0x[%d]/D", MMdetN));
+  // frecTree->Branch("cluster_1x", &cluster_1x, Form("cluster_1x[%d]/D", MMdetN));
+  // frecTree->Branch("cluster_2x", &cluster_2x, Form("cluster_2x[%d]/D", MMdetN));
+  // frecTree->Branch("cluster_3x", &cluster_3x, Form("cluster_3x[%d]/D", MMdetN));
+  // frecTree->Branch("cluster_0y", &cluster_0y, Form("cluster_0y[%d]/D", MMdetN));
+  // frecTree->Branch("cluster_1y", &cluster_1y, Form("cluster_1y[%d]/D", MMdetN));
+  // frecTree->Branch("cluster_2y", &cluster_2y, Form("cluster_2y[%d]/D", MMdetN));
+  // frecTree->Branch("cluster_3y", &cluster_3y, Form("cluster_3y[%d]/D", MMdetN));
 
   // get_APV2det_lists(asic2detName.Data());
 
@@ -97,19 +111,51 @@ bool ReconstructTrack::Init()
 
 void ReconstructTrack::StoreCluster(int n)
 {
-  if (vec_Cluster_x->size() && vec_Cluster_y->size())
+  switch (n)
   {
+  case 0:
 
     for (size_t i = 0; i < vec_Cluster_x->size(); i++)
     {
-      cout << "cluster_x->at(i) = " << vec_Cluster_x->at(i) << endl;
-      cluster_x[n].push_back(vec_Cluster_x->at(i));
+      cluster_0x.push_back(vec_Cluster_x->at(i));
     }
     for (size_t i = 0; i < vec_Cluster_y->size(); i++)
     {
-      cout << "cluster_y->at(i) = " << vec_Cluster_y->at(i) << endl;
-      cluster_y[n].push_back(vec_Cluster_y->at(i));
+      cluster_0y.push_back(vec_Cluster_y->at(i));
     }
+
+    break;
+  case 1:
+
+    for (size_t i = 0; i < vec_Cluster_x->size(); i++)
+    {
+      cluster_1x.push_back(vec_Cluster_x->at(i));
+    }
+    for (size_t i = 0; i < vec_Cluster_y->size(); i++)
+    {
+      cluster_1y.push_back(vec_Cluster_y->at(i));
+    }
+    break;
+  case 2:
+    for (size_t i = 0; i < vec_Cluster_x->size(); i++)
+    {
+      cluster_2x.push_back(vec_Cluster_x->at(i));
+    }
+    for (size_t i = 0; i < vec_Cluster_y->size(); i++)
+    {
+      cluster_2y.push_back(vec_Cluster_y->at(i));
+    }
+    break;
+  case 3:
+    for (size_t i = 0; i < vec_Cluster_x->size(); i++)
+    {
+      cluster_3x.push_back(vec_Cluster_x->at(i));
+    }
+    for (size_t i = 0; i < vec_Cluster_y->size(); i++)
+    {
+      cluster_3y.push_back(vec_Cluster_y->at(i));
+    }
+    break;
   }
 }
 
@@ -138,13 +184,13 @@ void ReconstructTrack::Loop()
     htheta[i][2] = new TH1F(Form("thetaMM%d", i), Form("thetaMM%d", i), 100, 0, 5);
     htheta[i][2]->GetXaxis()->SetTitle("#theta [#circ]");
     htheta[i][2]->GetYaxis()->SetTitle("counts");
-    hUnEfficiency1D[i][0] = new TH1F(Form("UnEfficiencyX%d", i), Form("UnEfficiencyX%d", i), 250, -5, 5);
+    hUnEfficiency1D[i][0] = new TH1F(Form("UnEfficiencyX%d", i), Form("UnEfficiencyX%d", i), 250, -50, 50);
     hUnEfficiency1D[i][0]->GetXaxis()->SetTitle("x [#mum]");
     hUnEfficiency1D[i][0]->GetYaxis()->SetTitle("counts");
-    hUnEfficiency1D[i][1] = new TH1F(Form("UnEfficiencyY%d", i), Form("UnEfficiencyY%d", i), 250, -5, 5);
+    hUnEfficiency1D[i][1] = new TH1F(Form("UnEfficiencyY%d", i), Form("UnEfficiencyY%d", i), 250, -50, 50);
     hUnEfficiency1D[i][1]->GetXaxis()->SetTitle("y [#mum]");
     hUnEfficiency1D[i][1]->GetYaxis()->SetTitle("counts");
-    hUnEfficiency2D[i] = new TH2F(Form("UnEfficiencyMM%d", i), Form("UnEfficiencyMM%d", i), 250, -5, 5, 250, -5, 5);
+    hUnEfficiency2D[i] = new TH2F(Form("UnEfficiencyMM%d", i), Form("UnEfficiencyMM%d", i), 20, -50, 50, 20, -50, 50);
     hUnEfficiency2D[i]->GetXaxis()->SetTitle("x [#mum]");
     hUnEfficiency2D[i]->GetYaxis()->SetTitle("y [#mum]");
   }
@@ -158,22 +204,38 @@ void ReconstructTrack::Loop()
   {
     DrawProcessbar(i, nentries);
     InitData();
-    cout << "vec_Cluster_x->size() = " << vec_Cluster_x->size() << endl;
-    for (size_t ii = 0; ii < vec_Cluster_x->size(); ii++)
-    {
-      cout << vec_Cluster_x->at(ii) << " " << endl;
-    }
 
     vector<double> px, py, pz;
     for (int j = 0; j < MMdetN; j++)
     {
       fdecTree[j]->GetEntry(i);
+
+      // cout << "MMx[" << j << "] = " << MMx[j] << endl;
+      // cout << "vec_Cluster_x->size() = " << vec_Cluster_x->size() << endl;
+      // cout << "vec_Cluster_y->size() = " << vec_Cluster_y->size() << endl;
+
+      // if (vec_Cluster_x->size() && vec_Cluster_y->size())
+      // {
+      //   for (size_t ii = 0; ii < vec_Cluster_x->size(); ii++)
+      //   {
+      //     cout << vec_Cluster_x->at(ii) << " " << endl;
+      //   }
+      //   for (size_t ii = 0; ii < vec_Cluster_y->size(); ii++)
+      //   {
+      //     cout << vec_Cluster_y->at(ii) << " " << endl;
+      //   }
+      // }
+
+      StoreCluster(j);
       px.push_back(x);
       py.push_back(y);
       pz.push_back(z);
     }
-    if (track_reconstruction(px, py, pz))
+
+    if (track_reconstruction(px, py, pz) && (vec_Cluster_x->size() < 2) && (vec_Cluster_y->size() < 2))
+    {
       frecTree->Fill();
+    }
     else
     {
       InitData();
@@ -217,6 +279,7 @@ void ReconstructTrack::Loop()
         if (thetaX < theta_cut && Abs(fitX) < pos_cut)
         {
           efficiencyX[j][0]++;
+
           if (MMsigx[j] && Abs(MMx[j] - fitX) < 100)
           {
             efficiencyX[j][1]++;
@@ -349,16 +412,24 @@ void ReconstructTrack::InitData()
   memset(XfitPars, 0, sizeof(XfitPars));
   memset(YfitPars, 0, sizeof(YfitPars));
 
-  cluster_x.resize(MMdetN);
-  cluster_y.resize(MMdetN);
-  for (size_t i = 0; i < sizeof(cluster_x); i++)
-  {
-    cluster_x[i].clear();
-  }
-  for (size_t i = 0; i < sizeof(cluster_y); i++)
-  {
-    cluster_y[i].clear();
-  }
+  // cluster_x.resize(MMdetN);
+  // cluster_y.resize(MMdetN);
+  cluster_0x.clear();
+  cluster_0y.clear();
+  cluster_1x.clear();
+  cluster_1y.clear();
+  cluster_2x.clear();
+  cluster_2y.clear();
+  cluster_3x.clear();
+  cluster_3y.clear();
+  // for (size_t i = 0; i < sizeof(cluster_x); i++)
+  // {
+  //   cluster_x[i].clear();
+  // }
+  // for (size_t i = 0; i < sizeof(cluster_y); i++)
+  // {
+  //   cluster_y[i].clear();
+  // }
 }
 
 bool ReconstructTrack::track_reconstruction(vector<double> px, vector<double> py, vector<double> pz)
@@ -369,7 +440,6 @@ bool ReconstructTrack::track_reconstruction(vector<double> px, vector<double> py
   vector<double> tmpzx, tmpx, tmpzy, tmpy;
   for (int i = 0; i < pz.size(); i++)
   {
-    StoreCluster(i);
     if (px[i] != 0)
     {
       idx.push_back(i);
