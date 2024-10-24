@@ -47,21 +47,21 @@ void ReadTracker(TString fileDir, int force)
     TrackerRecName = fileDir + "/Combine/Tracker-step4-rec.root";
   }
 
-  // // #produce raw-root
-  // cout << endl
-  //      << " --> Convert raw data to root, Output : " << TrackerRawName << endl;
-  // TrackerAPV2root fTrackerAPV2root(datList, TrackerRawName, force);
-  // if (fTrackerAPV2root.Init())
-  //   fTrackerAPV2root.Loop();
-  // cout << endl;
+  // #produce raw-root
+  cout << endl
+       << " --> Convert raw data to root, Output : " << TrackerRawName << endl;
+  TrackerAPV2root fTrackerAPV2root(datList, TrackerRawName, force);
+  if (fTrackerAPV2root.Init())
+    fTrackerAPV2root.Loop();
+  cout << endl;
 
-  // // #calculate maxA,pedmean,pedrms
-  // cout << endl
-  //      << " --> Analyzing waveform, Output : " << TrackerAnaName << endl;
-  // AnalysisAPV fAnalysisAPV(TrackerRawName, TrackerAnaName, force);
-  // if (fAnalysisAPV.Init())
-  //   fAnalysisAPV.Loop();
-  // cout << endl;
+  // #calculate maxA,pedmean,pedrms
+  cout << endl
+       << " --> Analyzing waveform, Output : " << TrackerAnaName << endl;
+  AnalysisAPV fAnalysisAPV(TrackerRawName, TrackerAnaName, force);
+  if (fAnalysisAPV.Init())
+    fAnalysisAPV.Loop();
+  cout << endl;
 
   // #decode ASIC channel to detector channel
   cout << endl

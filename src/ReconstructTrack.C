@@ -109,8 +109,10 @@ bool ReconstructTrack::Init()
   return true;
 }
 
-void ReconstructTrack::StoreCluster(int n)
+bool ReconstructTrack::StoreCluster(int n)
 {
+  if (vec_Cluster_x->size() && vec_Cluster_y->size())
+    return false;
   switch (n)
   {
   case 0:
@@ -157,6 +159,7 @@ void ReconstructTrack::StoreCluster(int n)
     }
     break;
   }
+  return true;
 }
 
 void ReconstructTrack::Loop()
@@ -356,14 +359,14 @@ void ReconstructTrack::Loop()
 
     cMMeff->cd(2 * i + 1);
     hpos[i][0]->Draw();
-    la = CreatLatex(Form("#color[2]{#sigma=%.0f#mum}", res[i][0]), 0.6, 0.35, 60);
+    la = CreatLatex(Form("sigma=%.0f microns", res[i][0]), 0.6, 0.35, 60);
     la->Draw("same");
     la = CreatLatex(Form("Eff=%.1f%%", efficiencyX[i][2] * 100), 0.2, 0.75, 60);
     la->Draw("same");
 
     cMMeff->cd(2 * i + 2);
     hpos[i][1]->Draw();
-    la = CreatLatex(Form("#color[2]{#sigma=%.0f#mum}", res[i][1]), 0.6, 0.35, 60);
+    la = CreatLatex(Form("sigma=%.0f microns", res[i][1]), 0.6, 0.35, 60);
     la->Draw("same");
     la = CreatLatex(Form("Eff=%.1f%%", efficiencyY[i][2] * 100), 0.2, 0.75, 60);
     la->Draw("same");
@@ -806,7 +809,7 @@ void ReconstructTrack::Alignment(string filename, int Npars)
       {
         x0.push_back(xvec[i][entry] * 0.4 - centre);
         y0.push_back(yvec[i][entry] * 0.4 - centre);
-        z0.push_back(zvec[i][entry] * 0.4 - centre);
+        z0.push_back(zvec[i][entry]);
         xalg.push_back(x0[i] + pars[i][0] - y0[i] / centre * pars[i][5]);
         yalg.push_back(y0[i] + pars[i][1] + x0[i] / centre * pars[i][5]);
         zalg.push_back(z0[i] + pars[i][2] - x0[i] / centre * pars[i][4] + y0[i] / centre * pars[i][3]);

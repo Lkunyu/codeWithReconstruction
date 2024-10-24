@@ -14,7 +14,7 @@ public:
   ReconstructTrack(TString fdecName, TString frecName, int force);
   ~ReconstructTrack();
   bool Init();
-  void StoreCluster(int n);
+  bool StoreCluster(int n);
   void Loop();
   void InitData();
 
